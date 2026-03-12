@@ -75,7 +75,7 @@ function computeBaseScore({ totalTxs, walletAgeDays, uniqueContracts, totalSentE
   score += Math.min(150, (totalSentEth + totalRecvEth) * 10);
   score += Math.min(100, streakDays * 10);
   score -= failedCount * 2;
-  return Math.max(0, Math.min(1000, Math.round(score)));
+  return Math.max(0, Math.min(100, Math.round(score)));
 }
 
 function emptyAnalytics(address) {
