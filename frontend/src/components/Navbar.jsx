@@ -53,7 +53,7 @@ export default function Navbar({ wallet }) {
             fontSize:       "18px",
             overflow:       "hidden",
           }}>
-            <img src="/logo.svg" alt="BQ" style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            <img src="/logo.png" alt="BQ" style={{ width: "100%", height: "100%", objectFit: "cover" }}
               onError={e => { e.target.style.display = "none"; e.target.parentNode.innerHTML = '<span style="color:#00d4ff;font-weight:900;font-size:12px">BQ</span>'; }} />
           </div>
           <span style={{ color: "white", fontWeight: "900", fontSize: "18px", letterSpacing: "-0.5px" }}>
