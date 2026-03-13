@@ -11,7 +11,7 @@ async function blockscoutFetch(address) {
 
 async function blockscoutFetchLatest(address) {
   try {
-    const url = `https://base.blockscout.com/api/v2/addresses/${address}/transactions?filter=to%20%7C%20from`;
+    const url = `https://base.blockscout.com/api/v2/addresses/${address}/transactions`;
     console.log("Fetching latest tx from v2:", url);
     const res = await fetch(url);
     if (!res.ok) {
