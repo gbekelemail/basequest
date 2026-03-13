@@ -13,7 +13,7 @@ export default function Navbar({ wallet }) {
   const WALLETS = [
     { id: "metamask", label: "MetaMask",        icon: "🦊" },
     { id: "coinbase", label: "Coinbase Wallet",  icon: "🔵" },
-    { id: "injected", label: "Rabby / Other",    icon: "🔑" },
+    { id: "injected", label: "Rabby / Other",    icon: "🐇" },
   ];
 
   return (
