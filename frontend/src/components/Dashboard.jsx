@@ -8,12 +8,15 @@ export default function Dashboard({ quests, wallet, setActiveTab }) {
 
   if (!isConnected) return (
     <div style={{ padding: "60px 20px", textAlign: "center" }}>
-      <div style={{ fontSize: "80px", marginBottom: "20px" }}>🔵</div>
+      <div style={{ fontSize: "80px", marginBottom: "20px" }}>🟦</div>
       <h1 style={{ color: "white", fontSize: "28px", fontWeight: "900", margin: "0 0 12px" }}>
-        Farm Base. Earn XP. Dominate the Chain.
+        Skill issue if you're not on-chain yet.
       </h1>
-      <p style={{ color: "#8892a4", fontSize: "16px", maxWidth: "400px", margin: "0 auto 32px" }}>
-        Complete on-chain quests, attack the boss, and climb the leaderboard on Base Mainnet.
+      <p style={{ color: "#8892a4", fontSize: "16px", maxWidth: "400px", margin: "0 auto 8px" }}>
+        Stack XP. Build legacy. Eat the airdrop.
+      </p>
+      <p style={{ color: "#0052ff", fontSize: "15px", fontWeight: "700", maxWidth: "400px", margin: "0 auto 32px" }}>
+        Based chads only. No paper hands allowed.
       </p>
       <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
         {[
