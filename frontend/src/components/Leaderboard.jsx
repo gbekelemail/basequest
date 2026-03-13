@@ -1,62 +1,186 @@
-import React from "react";
-import { formatNumber } from "../utils/contracts.js";
+import { useLeaderboard } from "../hooks/useLeaderboard";
+import { formatNumber } from "../utils/contracts";
 
-export default function Leaderboard({ wallet, leaderboard }) {
+export default function Leaderboard({ wallet }) {
   const { address } = wallet;
-  const { entries, loading, error, totalUsers, myRank, lastUpdated, refresh } = leaderboard;
+  const { entries, loading, error, totalUsers, myRank, lastUpdated, refresh } = useLeaderboard(address);
 
   return (
-    <div className="max-w-3xl mx-auto animate-in">
-      <div className="flex items-center justify-between mb-6">
+    <div style={{ padding: "24px 0", maxWidth: "700px", margin: "0 auto" }}>
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "24px", gap: "12px", flexWrap: "wrap" }}>
         <div>
-          <h2 className="section-title">🏆 Leaderboard</h2>
-          <p className="font-mono text-sm text-[#8892a4] mt-1">
+          <h2 style={{ color: "white", fontSize: "22px", fontWeight: "800", margin: "0 0 4px" }}>
+            🏆 Leaderboard
+          </h2>
+          <p style={{ color: "#8892a4", fontSize: "14px", margin: 0 }}>
             Top {entries.length} of {totalUsers} farmers
-            {lastUpdated && <span className="ml-2 text-[#8892a4]">· Updated {lastUpdated.toLocaleTimeString()}</span>}
+            {lastUpdated && (
+              <span style={{ marginLeft: "8px" }}>· Updated {lastUpdated.toLocaleTimeString()}</span>
+            )}
           </p>
         </div>
-        <button onClick={refresh} disabled={loading} className="btn-ghost text-sm">
-          {loading ? <span className="spinner spinner-sm" /> : "↻ Refresh"}
+        <button
+          onClick={refresh}
+          disabled={loading}
+          style={{
+            background:   "rgba(255,255,255,0.04)",
+            border:       "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "10px",
+            padding:      "8px 16px",
+            color:        loading ? "#8892a4" : "white",
+            fontWeight:   "600",
+            fontSize:     "13px",
+            cursor:       loading ? "not-allowed" : "pointer",
+          }}
+        >
+          {loading ? "Loading..." : "↻ Refresh"}
         </button>
       </div>
 
+      {/* Your rank */}
       {myRank && (
-        <div className="glass-card p-4 mb-4 flex items-center gap-4" style={{ border: "1px solid rgba(0,82,255,0.3)", background: "rgba(0,82,255,0.05)" }}>
-          <span className="font-[Orbitron] text-2xl font-bold text-[#00d4ff]">#{myRank}</span>
-          <div><p className="font-mono text-sm text-white">Your Rank</p><p className="font-mono text-xs text-[#8892a4]">Keep farming to climb!</p></div>
+        <div style={{
+          background:   "rgba(0,82,255,0.08)",
+          border:       "1px solid rgba(0,82,255,0.3)",
+          borderRadius: "16px",
+          padding:      "16px 20px",
+          marginBottom: "16px",
+          display:      "flex",
+          alignItems:   "center",
+          gap:          "16px",
+        }}>
+          <span style={{ color: "#00d4ff", fontWeight: "900", fontSize: "28px" }}>#{myRank}</span>
+          <div>
+            <div style={{ color: "white", fontWeight: "700", fontSize: "14px" }}>Your Rank</div>
+            <div style={{ color: "#8892a4", fontSize: "12px" }}>Keep farming to climb!</div>
+          </div>
         </div>
       )}
 
-      {error && <div className="glass-card p-6 text-center"><p className="font-mono text-sm text-[#8892a4]">Contract not deployed yet — leaderboard will populate once live.</p></div>}
+      {/* Error */}
+      {error && (
+        <div style={{
+          background:   "rgba(255,255,255,0.02)",
+          border:       "1px solid rgba(255,255,255,0.06)",
+          borderRadius: "16px",
+          padding:      "24px",
+          textAlign:    "center",
+          color:        "#8892a4",
+          fontSize:     "14px",
+          marginBottom: "16px",
+        }}>
+          Contract not deployed yet — leaderboard will populate once live.
+        </div>
+      )}
 
-      {loading ? (
-        <div className="space-y-2">{[...Array(10)].map((_,i) => <div key={i} className="h-16 bg-white/5 rounded-2xl animate-pulse" />)}</div>
-      ) : entries.length === 0 && !error ? (
-        <div className="glass-card p-12 text-center"><div className="text-5xl mb-4">🌱</div><h3 className="font-display font-bold text-xl text-white mb-2">Be the First!</h3><p className="font-mono text-sm text-[#8892a4]">No farmers yet. Complete quests to claim rank #1.</p></div>
-      ) : (
-        <div className="space-y-2 stagger">
-          {entries.map(e => (
-            <div key={e.address}
-              className={"glass-card p-4 flex items-center gap-4 transition-all duration-200 animate-in " + (e.rank <= 3 ? (e.rank === 1 ? "podium-1" : e.rank === 2 ? "podium-2" : "podium-3") : "") + (e.isCurrentUser ? " my-row" : "")}>
-              <div className="w-10 text-center flex-shrink-0">
-                {e.rank === 1 ? <span className="text-2xl">🥇</span> : e.rank === 2 ? <span className="text-2xl">🥈</span> : e.rank === 3 ? <span className="text-2xl">🥉</span> : <span className="font-[Orbitron] text-sm text-[#8892a4]">#{e.rank}</span>}
-              </div>
-              <span className="text-2xl flex-shrink-0">{e.level.emoji}</span>
-              <div className="flex-1 min-w-0">
-                <p className="font-mono text-sm text-white truncate flex items-center gap-2">
-                  {e.display}
-                  {e.isCurrentUser && <span className="badge badge-blue text-[10px]">you</span>}
-                </p>
-                <p className="font-mono text-xs text-[#8892a4]">{e.level.name} · {e.tasksCompleted} tasks{e.streakCount > 0 ? " · 🔥 " + e.streakCount + "d" : ""}</p>
-              </div>
-              <div className="text-right flex-shrink-0">
-                <p className="font-[Orbitron] text-sm font-bold text-[#00d4ff]">{formatNumber(e.xp)}</p>
-                <p className="font-mono text-[10px] text-[#8892a4]">XP</p>
-              </div>
-            </div>
+      {/* Loading skeletons */}
+      {loading && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          {[...Array(8)].map((_, i) => (
+            <div key={i} style={{
+              height:       "68px",
+              background:   "rgba(255,255,255,0.03)",
+              borderRadius: "16px",
+              border:       "1px solid rgba(255,255,255,0.05)",
+            }} />
           ))}
+        </div>
+      )}
+
+      {/* Empty state */}
+      {!loading && !error && entries.length === 0 && (
+        <div style={{
+          background:   "rgba(255,255,255,0.02)",
+          border:       "1px solid rgba(255,255,255,0.06)",
+          borderRadius: "20px",
+          padding:      "48px 24px",
+          textAlign:    "center",
+        }}>
+          <div style={{ fontSize: "48px", marginBottom: "12px" }}>🌱</div>
+          <div style={{ color: "white", fontWeight: "800", fontSize: "18px", marginBottom: "6px" }}>Be the First!</div>
+          <div style={{ color: "#8892a4", fontSize: "14px" }}>No farmers yet. Complete quests to claim rank #1.</div>
+        </div>
+      )}
+
+      {/* Entries */}
+      {!loading && entries.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          {entries.map(e => {
+            const rankEmoji = e.rank === 1 ? "🥇" : e.rank === 2 ? "🥈" : e.rank === 3 ? "🥉" : null;
+            const podiumBorder =
+              e.rank === 1 ? "rgba(240,180,41,0.3)"  :
+              e.rank === 2 ? "rgba(180,180,180,0.3)"  :
+              e.rank === 3 ? "rgba(205,127,50,0.3)"   :
+              e.isCurrentUser ? "rgba(0,82,255,0.3)"  :
+              "rgba(255,255,255,0.06)";
+            const podiumBg =
+              e.rank === 1 ? "rgba(240,180,41,0.06)"  :
+              e.rank === 2 ? "rgba(180,180,180,0.04)" :
+              e.rank === 3 ? "rgba(205,127,50,0.04)"  :
+              e.isCurrentUser ? "rgba(0,82,255,0.05)" :
+              "rgba(255,255,255,0.02)";
+
+            return (
+              <div key={e.address} style={{
+                background:   podiumBg,
+                border:       `1px solid ${podiumBorder}`,
+                borderRadius: "16px",
+                padding:      "14px 18px",
+                display:      "flex",
+                alignItems:   "center",
+                gap:          "14px",
+              }}>
+
+                {/* Rank */}
+                <div style={{ width: "36px", textAlign: "center", flexShrink: 0 }}>
+                  {rankEmoji
+                    ? <span style={{ fontSize: "24px" }}>{rankEmoji}</span>
+                    : <span style={{ color: "#8892a4", fontWeight: "700", fontSize: "14px" }}>#{e.rank}</span>
+                  }
+                </div>
+
+                {/* Level emoji */}
+                <span style={{ fontSize: "24px", flexShrink: 0 }}>{e.level.emoji}</span>
+
+                {/* Name + stats */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ color: "white", fontWeight: "700", fontSize: "14px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {e.display}
+                    </span>
+                    {e.isCurrentUser && (
+                      <span style={{
+                        background:   "rgba(0,82,255,0.2)",
+                        border:       "1px solid rgba(0,82,255,0.4)",
+                        borderRadius: "20px",
+                        padding:      "1px 7px",
+                        color:        "#00d4ff",
+                        fontSize:     "10px",
+                        fontWeight:   "700",
+                        flexShrink:   0,
+                      }}>you</span>
+                    )}
+                  </div>
+                  <div style={{ color: "#8892a4", fontSize: "12px", marginTop: "2px" }}>
+                    {e.level.name} · {e.tasksCompleted} tasks
+                    {e.streakCount > 0 && ` · 🔥 ${e.streakCount}d`}
+                  </div>
+                </div>
+
+                {/* XP */}
+                <div style={{ textAlign: "right", flexShrink: 0 }}>
+                  <div style={{ color: "#00d4ff", fontWeight: "800", fontSize: "16px" }}>
+                    {formatNumber(e.xp)}
+                  </div>
+                  <div style={{ color: "#8892a4", fontSize: "11px" }}>XP</div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
   );
-}
+                                    }
