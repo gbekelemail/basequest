@@ -76,36 +76,30 @@ export default function App() {
         background: "rgba(10,11,15,0.95)",
         borderRadius: "20px",
         padding: "6px 4px",
-        gap: "6px",
         boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
         zIndex: 100,
       }} className="mobile-nav">
 
-        {/* Invisible equal boxes */}
-        {Array(4).fill(0).map((_, i) => (
-          <div key={i} style={{ flex: 1 }}></div>
-        ))}
-
-        {TABS.map((tab, index) => (
+        {TABS.map((tab) => (
           <div
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             style={{
-              position: "relative",
               flex: 1,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
+              position: "relative",
             }}
           >
-            {/* Highlight behind icon */}
+            {/* Highlight rectangle */}
             {activeTab === tab.id && (
               <div style={{
                 position: "absolute",
                 top: "4px",
-                width: "40px",
+                width: "48px",
                 height: "36px",
                 borderRadius: "12px",
                 background: "linear-gradient(135deg, #0052ff, #0041cc)",
@@ -113,8 +107,10 @@ export default function App() {
                 transition: "all 0.2s",
               }} />
             )}
-            <span style={{ fontSize: "24px", marginBottom: "2px" }}>{tab.icon}</span>
-            <span style={{ fontSize: "12px", color: activeTab === tab.id ? "white" : "#8892a4", fontWeight: activeTab === tab.id ? 600 : 400 }}>{tab.label}</span>
+            <span style={{ fontSize: "26px", marginBottom: "2px" }}>{tab.icon}</span>
+            <span style={{ fontSize: "12px", color: activeTab === tab.id ? "white" : "#8892a4", fontWeight: activeTab === tab.id ? 600 : 400 }}>
+              {tab.label}
+            </span>
           </div>
         ))}
       </div>
